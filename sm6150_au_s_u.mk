@@ -50,15 +50,13 @@ TARGET_USES_AOSP_FOR_WLAN := true
 BOARD_HAS_QCOM_WLAN := true
 ENABLE_CAR_POWER_MANAGER := true
 
-SHIPPING_API_LEVEL := 34
-PRODUCT_SHIPPING_API_LEVEL := 34
+SHIPPING_API_LEVEL := 32
+PRODUCT_SHIPPING_API_LEVEL := 32
 BOARD_SHIPPING_API_LEVEL := $(SHIPPING_API_LEVEL)
+TARGET_USES_CAS1.2 := false
 
 #Enable Userspace Restart
 $(call inherit-product, $(SRC_TARGET_DIR)/product/userspace_reboot.mk)
-
-# Enable support for APEX updates
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 TARGET_USES_RRO := true
 
