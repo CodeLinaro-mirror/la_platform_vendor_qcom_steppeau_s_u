@@ -131,9 +131,9 @@ ifneq ($(AB_OTA_UPDATER),true)
 endif
 
 ifeq (true,$(call math_gt_or_eq,$(SHIPPING_API_LEVEL),34))
-TARGET_RECOVERY_FSTAB := device/qcom/$(MSMSTEPPE)_au/sm6150au_fstab_metadata_f2fs/fstab.qcom
+TARGET_RECOVERY_FSTAB := device/qcom/$(MSMSTEPPE)_au_s_u/sm6150au_fstab_metadata_f2fs/fstab.qcom
 else
-TARGET_RECOVERY_FSTAB := device/qcom/$(MSMSTEPPE)_au/fstab.qcom
+TARGET_RECOVERY_FSTAB := device/qcom/$(MSMSTEPPE)_au_s_u/fstab.qcom
 endif
 
 #Enable split vendor image
@@ -158,7 +158,7 @@ else
 BOARD_METADATAIMAGE_PARTITION_SIZE := 16777216
 BOARD_METADATAIMAGE_FILE_SYSTEM_TYPE := ext4
 endif
-BOARD_PREBUILT_DTBOIMAGE := out/target/product/$(MSMSTEPPE)_au/prebuilt_dtbo.img
+BOARD_PREBUILT_DTBOIMAGE := out/target/product/$(MSMSTEPPE)_au_s_u/prebuilt_dtbo.img
 BOARD_DTBOIMG_PARTITION_SIZE := 0x0800000
 BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)

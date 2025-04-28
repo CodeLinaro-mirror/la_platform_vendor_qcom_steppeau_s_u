@@ -4,6 +4,7 @@ TARGET_BOOTLOADER_BOARD_NAME := $(MSMSTEPPE)
 TARGET_BOARD_TYPE := auto
 TARGET_BOARD_SUFFIX := _au
 DEVICE_SUPPORTS_64_BIT_APPS_ONLY := true
+TARGET_BOARD_DERIVATIVE_SUFFIX := _s_u
 # Skip VINTF checks for kernel configs since we do not have kernel source
 PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
 
@@ -212,10 +213,10 @@ PRODUCT_VENDOR_PROPERTIES  += \
 $(call inherit-product, packages/services/Car/car_product/build/car.mk)
 
 MSMSTEPPE = sm6150
-PRODUCT_NAME := $(MSMSTEPPE)_au
-PRODUCT_DEVICE := $(MSMSTEPPE)_au
+PRODUCT_NAME := $(MSMSTEPPE)_au_s_u
+PRODUCT_DEVICE := $(MSMSTEPPE)_au_s_u
 PRODUCT_BRAND := qti
-PRODUCT_MODEL := $(MSMSTEPPE)_au for arm64
+PRODUCT_MODEL := $(MSMSTEPPE)_au_s_u for arm64
 PRODUCT_MANUFACTURER := qti
 
 PRODUCT_VENDOR_PROPERTIES += \
@@ -307,14 +308,14 @@ endif #TARGET_ENABLE_QC_AV_ENHANCEMENTS
 #PRODUCT_COPY_FILES += hardware/qcom/media/conf_files/msmnile/system_properties.xml:$(TARGET_COPY_OUT_VENDOR)/etc/system_properties.xml
 
 #Hibernation Script
-PRODUCT_COPY_FILES += device/qcom/$(MSMSTEPPE)_au/hiber.sh:$(TARGET_COPY_OUT_VENDOR)/bin/hiber.sh
-PRODUCT_COPY_FILES += device/qcom/$(MSMSTEPPE)_au/hiber_restore.sh:$(TARGET_COPY_OUT_VENDOR)/bin/hiber_restore.sh
+PRODUCT_COPY_FILES += device/qcom/$(MSMSTEPPE)_au_s_u/hiber.sh:$(TARGET_COPY_OUT_VENDOR)/bin/hiber.sh
+PRODUCT_COPY_FILES += device/qcom/$(MSMSTEPPE)_au_s_u/hiber_restore.sh:$(TARGET_COPY_OUT_VENDOR)/bin/hiber_restore.sh
 
 PRODUCT_COPY_FILES += hardware/interfaces/security/keymint/aidl/default/android.hardware.hardware_keystore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.hardware_keystore.xml
 PRODUCT_PACKAGES += android.hardware.media.omx@1.0-impl
 #Copy supported features list
 ifeq ($(TARGET_USES_GAS),true)
-PRODUCT_COPY_FILES += device/qcom/sm6150_au/sm6150_au_features.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/sm6150_au_features.xml
+PRODUCT_COPY_FILES += device/qcom/sm6150_au_s_u/sm6150_au_features.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/sm6150_au_s_u_features.xml
 endif
 
 #Audio DLKM
@@ -366,13 +367,13 @@ PRODUCT_PACKAGES += \
 
 # MTMD enablement
 PRODUCT_COPY_FILES += \
-    device/qcom/$(MSMSTEPPE)_au/input-port-associations.xml:$(TARGET_COPY_OUT_VENDOR)/etc/input-port-associations.xml \
-    device/qcom/$(MSMSTEPPE)_au/display_settings.xml:$(TARGET_COPY_OUT_VENDOR)/etc/display_settings.xml
+    device/qcom/$(MSMSTEPPE)_au_s_u/input-port-associations.xml:$(TARGET_COPY_OUT_VENDOR)/etc/input-port-associations.xml \
+    device/qcom/$(MSMSTEPPE)_au_s_u/display_settings.xml:$(TARGET_COPY_OUT_VENDOR)/etc/display_settings.xml
 
 
-DEVICE_MANIFEST_FILE := device/qcom/$(MSMSTEPPE)_au/manifest.xml
+DEVICE_MANIFEST_FILE := device/qcom/$(MSMSTEPPE)_au_s_u/manifest.xml
 DEVICE_MATRIX_FILE   := device/qcom/common/compatibility_matrix.xml
-DEVICE_FRAMEWORK_MANIFEST_FILE := device/qcom/msmnile_au/framework_manifest.xml
+DEVICE_FRAMEWORK_MANIFEST_FILE := device/qcom/msmnile_au_s_u/framework_manifest.xml
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := vendor/qcom/opensource/core-utils/vendor_framework_compatibility_matrix.xml
 
 # Enable Scoped Storage related
@@ -396,14 +397,14 @@ PRODUCT_ENFORCE_RRO_TARGETS := framework-res
 
 # FBE support
 PRODUCT_COPY_FILES += \
-    device/qcom/$(MSMSTEPPE)_au/init.qti.qseecomd.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qti.qseecomd.sh
+    device/qcom/$(MSMSTEPPE)_au_s_u/init.qti.qseecomd.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qti.qseecomd.sh
 
 # HS-I2S support
 PRODUCT_COPY_FILES += \
-    device/qcom/$(MSMSTEPPE)_au/hsi2s_early_boot.sh:$(TARGET_COPY_OUT_VENDOR)/bin/hsi2s_early_boot.sh
+    device/qcom/$(MSMSTEPPE)_au_s_u/hsi2s_early_boot.sh:$(TARGET_COPY_OUT_VENDOR)/bin/hsi2s_early_boot.sh
 
 # MSM IRQ Balancer configuration file
-PRODUCT_COPY_FILES += device/qcom/$(MSMSTEPPE)_au/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
+PRODUCT_COPY_FILES += device/qcom/$(MSMSTEPPE)_au_s_u/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
 
 
 
@@ -434,7 +435,7 @@ PRODUCT_PACKAGES += \
 # Kernel modules install path
 KERNEL_MODULES_INSTALL := dlkm
 ifeq ($(KERNEL_MODULES_OUT),)
-KERNEL_MODULES_OUT := out/target/product/$(MSMSTEPPE)_au/$(KERNEL_MODULES_INSTALL)/lib/modules
+KERNEL_MODULES_OUT := out/target/product/$(MSMSTEPPE)_au_s_u/$(KERNEL_MODULES_INSTALL)/lib/modules
 endif
 #FEATURE_OPENGLES_EXTENSION_PACK support string config file
 PRODUCT_COPY_FILES += \
@@ -452,7 +453,7 @@ PRODUCT_COMPATIBLE_PROPERTY_OVERRIDE := true
 #Enable vndk-sp Libraries
 PRODUCT_PACKAGES += vndk_package
 
-DEVICE_PACKAGE_OVERLAYS += device/qcom/sm6150_au/overlay
+DEVICE_PACKAGE_OVERLAYS += device/qcom/sm6150_au_s_u/overlay
 
 # Enable flag to support slow devices
 TARGET_PRESIL_SLOW_BOARD := true
@@ -657,7 +658,7 @@ PRODUCT_VENDOR_PROPERTIES += ro.radio.noril=true
 PRODUCT_VENDOR_PROPERTIES += ro.boot.wificountrycode=us
 
 # Native service to load modules
-ifneq (,$(filter $(TARGET_BOARD_PLATFORM)$(TARGET_BOARD_SUFFIX), sm6150_au))
+ifneq (,$(filter $(TARGET_BOARD_PLATFORM)$(TARGET_BOARD_SUFFIX)$(TARGET_BOARD_DERIVATIVE_SUFFIX), sm6150_au_s_u))
 PRODUCT_VENDOR_PROPERTIES += ro.vendor.qti.load_dlkm.service=native
 endif
 
