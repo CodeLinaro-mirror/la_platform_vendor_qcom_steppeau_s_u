@@ -5,6 +5,9 @@ TARGET_BOARD_TYPE := auto
 TARGET_BOARD_SUFFIX := _au
 DEVICE_SUPPORTS_64_BIT_APPS_ONLY := true
 TARGET_BOARD_DERIVATIVE_SUFFIX := _s_u
+
+PRODUCT_SOONG_NAMESPACES += hardware/qcom/wlan/qcwcn
+
 # Skip VINTF checks for kernel configs since we do not have kernel source
 PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
 
@@ -50,15 +53,13 @@ TARGET_USES_AOSP_FOR_WLAN := true
 BOARD_HAS_QCOM_WLAN := true
 ENABLE_CAR_POWER_MANAGER := true
 
-SHIPPING_API_LEVEL := 34
-PRODUCT_SHIPPING_API_LEVEL := 34
+SHIPPING_API_LEVEL := 32
+PRODUCT_SHIPPING_API_LEVEL := 32
 BOARD_SHIPPING_API_LEVEL := $(SHIPPING_API_LEVEL)
+TARGET_USES_CAS1.2 := false
 
 #Enable Userspace Restart
 $(call inherit-product, $(SRC_TARGET_DIR)/product/userspace_reboot.mk)
-
-# Enable support for APEX updates
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 TARGET_USES_RRO := true
 
@@ -119,6 +120,7 @@ TARGET_USES_RRO := true
   PRODUCT_BUILD_VENDOR_BOOT_IMAGE := true
   PRODUCT_BUILD_VENDOR_DLKM_IMAGE := true
   PRODUCT_BUILD_SYSTEM_DLKM_IMAGE := true
+  PRODUCT_BUILD_INIT_BOOT_IMAGE := false
 #endif #BOARD_DYNAMIC_PARTITION_ENABLE
 
 ###########

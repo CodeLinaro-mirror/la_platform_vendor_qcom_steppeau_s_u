@@ -5,6 +5,13 @@
 
 # Disable DLKMs compilation for sm6150_au
 TARGET_KERNEL_DLKM_DISABLE := false
+#We are resetting BOARD_VENDOR_KERNEL_MODULES due to BoardConfig.mk invoked twice
+# 1. From $(QCPATH)/common/config/device-vendor.mk
+# 2. From build/make/core/board_config.mk
+#which impacts duplicates found in vendor_dlkm partition while building image
+ifneq ( ,$(filter Baklava 16,$(PLATFORM_VERSION)))
+BOARD_VENDOR_KERNEL_MODULES :=
+endif
 #Enable legacy path for ELITE
 ENABLE_AUDIO_LEGACY_TECHPACK := true
 
@@ -67,16 +74,16 @@ ifeq ($(ENABLE_AB), true)
   TARGET_NO_RECOVERY := true
 endif
 
-BOARD_BOOT_HEADER_VERSION := 4
+# Specify boot header version
+BOARD_BOOT_HEADER_VERSION := 3
 BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOT_HEADER_VERSION)
 
 ifeq ($(TARGET_NO_RECOVERY), true)
 BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
-BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
+ifneq ( ,$(filter Baklava 16,$(PLATFORM_VERSION)))
+BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := false
 endif
-# Specify init boot header version
-BOARD_INIT_BOOT_HEADER_VERSION := 4
-BOARD_MKBOOTIMG_INIT_ARGS += --header_version $(BOARD_INIT_BOOT_HEADER_VERSION)
+endif
 
 TARGET_RECOVERY_PIXEL_FORMAT:= RGBX_8888
 
@@ -99,19 +106,12 @@ endif
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
 BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 5314772992
 BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := vendor vendor_dlkm system_dlkm
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 67108864
 BOARD_EXT4_SHARE_DUP_BLOCKS := true
 
 ifeq ($(BOARD_KERNEL_SEPARATED_DTBO),true)
    # Enable DTBO for recovery image
    BOARD_INCLUDE_RECOVERY_DTBO := true
 endif
-
-# Enable chained vbmeta for boot images
-BOARD_AVB_BOOT_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
-BOARD_AVB_BOOT_ALGORITHM := SHA256_RSA4096
-BOARD_AVB_BOOT_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
-BOARD_AVB_BOOT_ROLLBACK_INDEX_LOCATION := 3
 
 # Defines for enabling A/B builds
 AB_OTA_UPDATER := true
@@ -144,11 +144,11 @@ TARGET_COPY_OUT_VENDOR := vendor
 BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED := true
 endif
 TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
+#TARGET_USERIMAGES_USE_F2FS := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 0x06000000
 BOARD_KERNEL-GKI_BOOTIMAGE_PARTITION_SIZE := $(BOARD_BOOTIMAGE_PARTITION_SIZE)
 BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 0x06000000
-BOARD_INIT_BOOT_IMAGE_PARTITION_SIZE := 0x00800000
+#BOARD_INIT_BOOT_IMAGE_PARTITION_SIZE := 0x00800000
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 26843545600
 BOARD_PERSISTIMAGE_PARTITION_SIZE := 33554432
 ifeq (true,$(call math_gt_or_eq,$(SHIPPING_API_LEVEL),34))
@@ -162,7 +162,7 @@ BOARD_PREBUILT_DTBOIMAGE := out/target/product/$(MSMSTEPPE)_au_s_u/prebuilt_dtbo
 BOARD_DTBOIMG_PARTITION_SIZE := 0x0800000
 BOARD_PERSISTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
-BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := ext4
 
 ifeq ($(BOARD_SUPPORTS_RAMDISK_EARLY_INIT), true)
 BOARD_GENERIC_RAMDISK_KERNEL_MODULES_LOAD := \
@@ -185,9 +185,9 @@ TARGET_USES_NEW_ION_API :=true
 TARGET_USES_QCOM_BSP := false
 TARGET_USES_DRM_PP := true
 
-BOARD_BOOTCONFIG := androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 androidboot.recover_usb=1 androidboot.selinux=enforcing androidboot.load_modules_parallel=true
+#BOARD_BOOTCONFIG := androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 androidboot.recover_usb=1 androidboot.selinux=enforcing androidboot.load_modules_parallel=true
 
-BOARD_KERNEL_CMDLINE := lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 swiotlb=2048 loop.max_part=7 kvm-arm.mode=nvhe hibernate=nocompress noswap_randomize pcie_ports=compat log_buf_len=2M
+BOARD_KERNEL_CMDLINE := debug loglevel=8 lpm_levels.sleep_disabled=1 video=vfb:640x400,bpp=32,memsize=3072000 msm_rtb.filter=0x237 service_locator.enable=1 swiotlb=2048 loop.max_part=7 kvm-arm.mode=nvhe hibernate=nocompress noswap_randomize pcie_ports=compat log_buf_len=2M androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=a600000.dwc3 androidboot.recover_usb=1 androidboot.selinux=enforcing androidboot.load_modules_parallel=true
 
 ifeq ($(BOARD_SUPPORTS_RAMDISK_EARLY_INIT),true)
 BOARD_KERNEL_CMDLINE += firmware_class.path=/vendor_early_services/vendor/firmware_mnt/image,/vendor_early_services/firmware
@@ -198,7 +198,7 @@ endif
 ifeq ($(TARGET_CONSOLE_ENABLED),true)
 #BOARD_KERNEL_CMDLINE += console=ttyMSM0,115200n8 earlycon=qcom_geni,0xa90000 qcom_geni_serial.con_enabled=1
 BOARD_KERNEL_CMDLINE += console=ttyMSM0,115200n8 earlycon=qcom_geni,0x880000 msm_geni_serial.con_enabled=1
-BOARD_BOOTCONFIG += androidboot.console=ttyMSM0
+BOARD_KERNEL_CMDLINE += androidboot.console=ttyMSM0
 BOARD_KERNEL_CMDLINE += slub_debug=FZPU
 else
 ifeq ($(TARGET_CONSOLE_ENABLED),false)
@@ -206,6 +206,9 @@ BOARD_KERNEL_CMDLINE += qcom_geni_serial.con_enabled=0
 endif
 endif
 
+ifneq ( ,$(filter Baklava 16,$(PLATFORM_VERSION)))
+BOARD_BOOTCONFIG :=
+endif
 
 BOARD_EGL_CFG := device/qcom/$(TARGET_BOARD_PLATFORM)/egl.cfg
 
@@ -303,7 +306,9 @@ endif
 
 #Flag to enable System SDK Requirements.
 #All vendor APK will be compiled against system_current API set.
-BOARD_SYSTEMSDK_VERSIONS:=34
+ifeq ( ,$(filter Baklava 16,$(PLATFORM_VERSION)))
+BOARD_SYSTEMSDK_VERSIONS := 34
+endif
 
 #Enable VNDK Compliance
 BOARD_VNDK_VERSION:=current
@@ -316,7 +321,9 @@ BUILD_BROKEN_USES_BUILD_HOST_EXECUTABLE := true
 BUILD_BROKEN_USES_BUILD_COPY_HEADERS := true
 BUILD_BROKEN_USES_BUILD_HOST_STATIC_LIBRARY := true
 BUILD_BROKEN_CLANG_PROPERTY := true
+ifeq ( ,$(filter Baklava 16,$(PLATFORM_VERSION)))
 BUILD_BROKEN_USES_SOONG_PYTHON2_MODULES := true
+endif
 
 #Flag for Early Ethernet
 IS_EARLY_ETH_ENABLED := 1
@@ -332,3 +339,11 @@ IS_EARLY_ETH_ENABLED := 1
 include device/qcom/sepolicy_vndr/SEPolicy.mk
 #Enable Camera2 APIs on automotive builds
 ENABLE_CAMERA_SERVICE := true
+
+#We are sorting BOARD_VENDOR_KERNEL_MODULES due to BoardConfig.mk invoked twice
+# 1. From $(QCPATH)/common/config/device-vendor.mk
+# 2. From build/make/core/board_config.mk
+#which impacts duplicates found in vendor_dlkm partition while building image
+ifneq ( ,$(filter Baklava 16,$(PLATFORM_VERSION)))
+BOARD_VENDOR_KERNEL_MODULES := $(sort $(BOARD_VENDOR_KERNEL_MODULES))
+endif
