@@ -15,8 +15,8 @@ echo "${major}:${minor}" > /sys/power/resume
 sleep 3
 
 echo "enable swap partition"
-mkswap /dev/block/mmcblk0p84
-swapon /dev/block/mmcblk0p84 -p 0
+mkswap /dev/block/mmcblk0p82
+swapon /dev/block/mmcblk0p82 -p 0
 
 echo 100 > /proc/sys/vm/swappiness
 echo 0 > /sys/power/image_size
