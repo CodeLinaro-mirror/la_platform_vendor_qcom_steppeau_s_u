@@ -11,5 +11,4 @@ fi
 if [ "$(cat /sys/class/remoteproc/remoteproc1/state)" != "running" ]; then
     echo start > /sys/class/remoteproc/remoteproc1/state
 fi
-swapoff /dev/block/mmcblk0p84
-
+swapoff /dev/block/mmcblk0p82
