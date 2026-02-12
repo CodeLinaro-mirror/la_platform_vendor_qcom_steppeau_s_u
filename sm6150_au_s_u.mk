@@ -56,7 +56,12 @@ ENABLE_CAR_POWER_MANAGER := true
 SHIPPING_API_LEVEL := 32
 PRODUCT_SHIPPING_API_LEVEL := 32
 BOARD_SHIPPING_API_LEVEL := $(SHIPPING_API_LEVEL)
-TARGET_USES_CAS1.2 := false
+
+ifeq ($(PLATFORM_VERSION) ,$(filter U 14 UpsideDownCake, $(PLATFORM_VERSION)))
+  TARGET_USES_CAS1.2 := false
+else
+  TARGET_REQUIRES_HIDL_CAS_HAL := false
+endif
 
 #Enable Userspace Restart
 $(call inherit-product, $(SRC_TARGET_DIR)/product/userspace_reboot.mk)
@@ -728,6 +733,18 @@ endif
 
 # privapp-permissions whitelisting (To Fix CTS :privappPermissionsMustBeEnforced)
 PRODUCT_VENDOR_PROPERTIES += ro.control_privapp_permissions=enforce
+
+# Enable Car Telemetry
+ENABLE_CARTELEMETRY_SERVICE := true
+PRODUCT_PACKAGES += android.automotive.telemetryd@1.0
+PRODUCT_PACKAGES += ScriptExecutor
+
+ifneq ( , $(filter bp4a cp2a, $(TARGET_RELEASE_PLATFORM)))
+AB_OTA_POSTINSTALL_CONFIG += \
+               RUN_POSTINSTALL_vendor=true \
+               FILESYSTEM_TYPE_vendor=ext4 \
+               POSTINSTALL_OPTIONAL_vendor=true
+endif
 
 ###################################################################################
 # This is the End of target.mk file.
